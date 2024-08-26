@@ -7,6 +7,7 @@ import Select from 'react-select';
 export default function Home() {
   const [jsonInput, setJsonInput] = useState('');
   const [response, setResponse] = useState(null);
+  const [getResponse, setGetResponse] = useState(null); // New state for GET response
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -38,6 +39,19 @@ export default function Home() {
 
   const handleSelectChange = (selected) => {
     setSelectedOptions(selected ? selected.map(option => option.value) : []);
+  };
+
+  // New function to handle GET request
+  const handleGetRequest = async () => {
+    try {
+      const res = await fetch('https://bajajbackend-knll.onrender.com/bfhl', {
+        method: 'GET'
+      });
+      const data = await res.json();
+      setGetResponse(data);
+    } catch (error) {
+      setErrorMessage('Error fetching operation code.');
+    }
   };
 
   return (
@@ -83,6 +97,15 @@ export default function Home() {
               )}
             </div>
           )}
+        </div>
+      )}
+      <div className="text-center">
+        <button onClick={handleGetRequest} className="btn btn-secondary mt-4">Get Operation Code</button>
+      </div>
+      {getResponse && (
+        <div className="mt-4 text-center">
+          <h3>Operation Code:</h3>
+          <p>{getResponse.operation_code}</p>
         </div>
       )}
     </div>
